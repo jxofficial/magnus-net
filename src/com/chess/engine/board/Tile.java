@@ -7,14 +7,14 @@ import java.util.Map;
 
 public abstract class Tile {
     protected final int tileCoordinate;
-    private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
+    private static final Map<Integer, EmptyTile> EMPTY_TILES_CACHE = createAllPossibleEmptyTiles();
 
     private Tile(int tileCoordinate) {
         this.tileCoordinate = tileCoordinate;
     }
 
     public static Tile createTile(final int tileCoordinate, final Piece piece) {
-        return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILES.get(tileCoordinate);
+        return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILES_CACHE.get(tileCoordinate);
     }
 
     private static Map<Integer, EmptyTile> createAllPossibleEmptyTiles() {
@@ -33,7 +33,7 @@ public abstract class Tile {
     public abstract Piece getPiece();
 
     public static final class EmptyTile extends Tile {
-        public EmptyTile(int coordinate) {
+        private EmptyTile(int coordinate) {
             super(coordinate);
         }
 
@@ -51,7 +51,7 @@ public abstract class Tile {
     public static final class OccupiedTile extends Tile {
         private final Piece pieceOnTile;
 
-        public OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
+        private OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile = pieceOnTile;
         }
