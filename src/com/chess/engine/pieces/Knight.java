@@ -57,14 +57,14 @@ public class Knight extends Piece {
                 final Tile candidateDestinationTile = board.getTile(candidateDestination);
 
                 if (!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move());
+                    legalMoves.add(new Move.PieceMove(board, this, candidateDestination));
                 } else {
                     final Piece pieceOnDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceOnDestination.getPieceAlliance();
 
                     // piece on destination tile is enemy
                     if (pieceAlliance != this.pieceAlliance) {
-                        legalMoves.add(new Move());
+                        legalMoves.add(new Move.CapturingMove(board, this, candidateDestination, pieceOnDestination));
                     }
                 }
             }
