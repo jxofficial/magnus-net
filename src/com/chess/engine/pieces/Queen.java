@@ -41,7 +41,7 @@ public class Queen extends Piece {
                         if (this.pieceAlliance != alliance) {
                             legalMoves.add(new Move.CapturingMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
-                        break; // piece is blocking bishop, no need to consider diagonal further
+                        break; // piece is blocking Queen, no need to consider diagonal further
                     }
                 }
             }
