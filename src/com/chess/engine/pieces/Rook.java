@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Bishop extends Piece {
-    private static final int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9};
+public class Rook extends Piece {
+    private static final int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-8, -1, 1, 8};
 
-    public Bishop(int piecePosition, Alliance pieceAlliance) {
+    public Rook(int piecePosition, Alliance pieceAlliance) {
         super(piecePosition, pieceAlliance);
     }
 
@@ -26,10 +26,10 @@ public class Bishop extends Piece {
 
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateOffset)
-                    || isEighthColumnExclusion(candidateDestinationCoordinate, candidateOffset)
+                        || isEighthColumnExclusion(candidateDestinationCoordinate, candidateOffset)
                 )
 
-                candidateDestinationCoordinate += candidateOffset;
+                    candidateDestinationCoordinate += candidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
@@ -40,7 +40,7 @@ public class Bishop extends Piece {
                         if (this.pieceAlliance != alliance) {
                             legalMoves.add(new Move.CapturingMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
-                        break; // piece is blocking bishop, no need to consider diagonal further
+                        break; // piece is blocking rook, no need to consider diagonal further
                     }
                 }
             }
@@ -50,10 +50,10 @@ public class Bishop extends Piece {
     }
 
     private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == 7);
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -1);
     }
 
     private static boolean isEighthColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (candidateOffset == -7 || candidateOffset == 9);
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (candidateOffset == 1);
     }
 }
