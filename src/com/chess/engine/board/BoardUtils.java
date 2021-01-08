@@ -8,6 +8,8 @@ public class BoardUtils {
     public static boolean[] SECOND_COLUMN = initCol(1);
     public static boolean[] SEVENTH_COLUMN = initCol(6);
     public static boolean[] EIGHTH_COLUMN = initCol(7);
+    public static final boolean[] SECOND_ROW = null;
+    public static final boolean[] SEVENTH_ROW = null;
 
     private BoardUtils() {
         throw new RuntimeException("You cannot instantiate me!");
