@@ -33,7 +33,7 @@ public class Rook extends Piece {
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new Move.PieceMove(board, this, candidateDestinationCoordinate));
+                        legalMoves.add(new Move.NormalMove(board, this, candidateDestinationCoordinate));
                     } else {
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance alliance = pieceAtDestination.getPieceAlliance();

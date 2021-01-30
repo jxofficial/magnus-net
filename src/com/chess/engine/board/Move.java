@@ -22,8 +22,8 @@ public abstract class Move {
         }
     }
 
-    public static final class PieceMove extends Move {
-        public PieceMove(Board board, Piece pieceMoved, int destinationCoordinate) {
+    public static final class NormalMove extends Move {
+        public NormalMove(Board board, Piece pieceMoved, int destinationCoordinate) {
             super(board, pieceMoved, destinationCoordinate);
         }
     }

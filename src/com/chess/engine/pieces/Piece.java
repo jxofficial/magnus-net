@@ -15,7 +15,7 @@ public abstract class Piece {
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
         // TODO update this
-        this.isFirstMove - false;
+        this.isFirstMove = false;
     }
 
     public abstract Collection<Move> calculateLegalMoves(Board board);

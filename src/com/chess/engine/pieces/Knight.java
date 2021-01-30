@@ -57,7 +57,7 @@ public class Knight extends Piece {
                 final Tile candidateDestinationTile = board.getTile(candidateDestination);
 
                 if (!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move.PieceMove(board, this, candidateDestination));
+                    legalMoves.add(new Move.NormalMove(board, this, candidateDestination));
                 } else {
                     final Piece pieceOnDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceOnDestination.getPieceAlliance();
