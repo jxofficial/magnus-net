@@ -4,10 +4,7 @@ import com.chess.engine.Alliance;
 import com.chess.engine.pieces.*;
 import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
     private final List<Tile> gameBoard;
@@ -18,9 +15,37 @@ public class Board {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
+
+        final Collection<Move> whiteStandardLegalMoves = calculateLegalMoves(this.whitePieces);
+        final Collection<Move> blackStandardLegalMoves = calculateLegalMoves(this.blackPieces);
     }
 
-    private Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+            final String tileText = this.gameBoard.get(i).toString(); // tile.toString()
+            sb.append(String.format("%3s", tileText));
+            if ((i + 1) % BoardUtils.NUM_TILES_PER_ROW == 0) {
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+        final List<Move> legalMoves = new ArrayList<>();
+        for (final Piece piece : pieces) {
+            legalMoves.addAll(piece.calculateLegalMoves(this));
+        }
+        return ImmutableList.copyOf(legalMoves);
+    }
+
+    // static because it's independent of Board's internal state
+    // private because it is only used in Board class
+    // refer to https://softwareengineering.stackexchange.com/a/234426/357268
+    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
         for (final Tile tile: gameBoard) {
             if (tile.isTileOccupied()) {
@@ -34,7 +59,7 @@ public class Board {
     }
 
     public Tile getTile(final int tileCoordinate) {
-        return null;
+        return gameBoard.get(tileCoordinate);
     }
 
     private static List<Tile> createGameBoard(final Builder builder) {
@@ -94,7 +119,7 @@ public class Board {
         Alliance nextMoveMaker;
 
         public Builder() {
-
+            this.boardConfig = new HashMap<>();
         }
 
         public Builder setPiece(final Piece piece) {
