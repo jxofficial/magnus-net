@@ -1,6 +1,7 @@
 package com.chess.engine.board;
 
 import com.chess.engine.pieces.Piece;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,7 @@ public abstract class Tile {
             emptyTileMap.put(i, new EmptyTile(i));
         }
 
-        // TODO make it immutable using Guava
-        return emptyTileMap;
+        return ImmutableMap.copyOf(emptyTileMap);
     }
 
     public abstract boolean isTileOccupied();
