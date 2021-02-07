@@ -72,17 +72,30 @@ public abstract class Player {
     }
 
     public MoveTransition makeMove(final Move move) {
-//        if (!isMoveLegal(move)) {
-//            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
-//        }
-//        final Board transitionBoard = move.execute();
-//
-//        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transitionBoard.currentPlayer().getO)
-        return null;
+        if (!isMoveLegal(move)) {
+            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
+        }
+        // we make a move here to produce a transition board, assume it's a white move
+        // a transition board is a possibly valid board
+        final Board transitionBoard = move.execute();
+        final int opponentKingPosition = transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition();
+        final Collection<Move> playerLegalMoves = transitionBoard.currentPlayer().getLegalMoves();
+
+        // hence, here we are seeing from the black POV
+        // since white has already made a move for white, we check all of black's moves, and see if it attacks the white king
+        final Collection<Move> attacksOnPlayerKing = Player.calculateAttacksOnTile(opponentKingPosition, playerLegalMoves);
+
+        if (!attacksOnPlayerKing.isEmpty()) {
+            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+        }
+
+        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();
+
     public abstract Alliance getAlliance();
+
     public abstract Player getOpponent();
 
     private King establishKing() {
@@ -94,4 +107,11 @@ public abstract class Player {
         throw new RuntimeException("Invalid board. King does not exist");
     }
 
+    public King getPlayerKing() {
+        return playerKing;
+    }
+
+    public Collection<Move> getLegalMoves() {
+        return legalMoves;
+    }
 }
