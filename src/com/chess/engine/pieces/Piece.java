@@ -20,18 +20,27 @@ public abstract class Piece {
         this.pieceType = pieceType;
     }
 
-    public abstract Collection<Move> calculateLegalMoves(Board board);
 
+    /* Abstract methods */
+    public abstract Collection<Move> calculateLegalMoves(Board board);
+    // returns a new piece given a move
+    public abstract Piece movePiece(Move move);
+
+    /* Class method */
     public boolean isFirstMove() {
         return isFirstMove;
     }
 
+    /* Getters */
     public Alliance getPieceAlliance() {
         return this.pieceAlliance;
     }
-
     public int getPiecePosition() { return this.piecePosition; }
+    public PieceType getPieceType() {
+        return pieceType;
+    }
 
+    /* Nested enum */
     public enum PieceType {
         PAWN("P") {
             @Override
@@ -81,9 +90,5 @@ public abstract class Piece {
         }
 
         public abstract boolean isKing();
-    }
-
-    public PieceType getPieceType() {
-        return pieceType;
     }
 }

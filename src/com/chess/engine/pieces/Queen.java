@@ -50,6 +50,12 @@ public class Queen extends Piece {
         return legalMoves;
     }
 
+
+    @Override
+    public Queen movePiece(final Move move) {
+        return new Queen(move.getPieceToBeMoved().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
     // combination of both rook and bishop
     private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
         return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == 7 || candidateOffset == -1);

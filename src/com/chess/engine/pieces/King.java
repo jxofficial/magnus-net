@@ -46,6 +46,14 @@ public class King extends Piece {
         return legalMoves;
     }
 
+    @Override
+    public King movePiece(final Move move) {
+        return new King(move.getPieceToBeMoved().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
+    /* Private helper methods to ensure piece that exceeds board coordinates
+     * is not considered when calculating legal moves
+     */
     private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
         return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidateOffset == -9
                 || candidateOffset == -1 || candidateOffset == 7));

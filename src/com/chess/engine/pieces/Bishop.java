@@ -26,10 +26,10 @@ public class Bishop extends Piece {
 
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateOffset)
-                    || isEighthColumnExclusion(candidateDestinationCoordinate, candidateOffset)
+                        || isEighthColumnExclusion(candidateDestinationCoordinate, candidateOffset)
                 )
 
-                candidateDestinationCoordinate += candidateOffset;
+                    candidateDestinationCoordinate += candidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {
@@ -49,6 +49,14 @@ public class Bishop extends Piece {
         return legalMoves;
     }
 
+    @Override
+    public Bishop movePiece(final Move move) {
+        return new Bishop(move.getPieceToBeMoved().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
+    /* Private helper methods to ensure piece that exceeds board coordinates
+     * is not considered when calculating legal moves
+     */
     private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
         return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == 7);
     }

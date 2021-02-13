@@ -19,6 +19,7 @@ public class BoardUtils {
         return coordinate >= 0 && coordinate < NUM_TILES;
     }
 
+    // make entire col true
     private static boolean[] initCol(int colNum) {
         final boolean[] column = new boolean[NUM_TILES];
         do {
@@ -29,7 +30,7 @@ public class BoardUtils {
     }
 
     // make entire row true
-    // eg row 2 (tile coordinate 8) means arr[8] - arr[15] is true
+    // eg row 2 (tile coordinate 8) means arr[8] to arr[15] is true
     private static boolean[] initRow(int tileCoordinateForStartOfRow) {
         final boolean[] row = new boolean[NUM_TILES];
         do {

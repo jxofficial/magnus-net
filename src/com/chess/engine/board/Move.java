@@ -6,21 +6,27 @@ import static com.chess.engine.board.Board.*;
 
 public abstract class Move {
     final Board board;
-    final Piece pieceMoved;
+    final Piece pieceToBeMoved;
     final int destinationCoordinate;
 
     public Move(Board board, Piece pieceMoved, int destinationCoordinate) {
         this.board = board;
-        this.pieceMoved = pieceMoved;
+        this.pieceToBeMoved = pieceMoved;
         this.destinationCoordinate = destinationCoordinate;
     }
 
-    public int getDestinationCoordinate() {
-        return destinationCoordinate;
-    }
-
+    /* Abstract methods*/
     public abstract Board execute();
 
+    /* Getters */
+    public int getDestinationCoordinate() {
+        return this.destinationCoordinate;
+    }
+
+    public Piece getPieceToBeMoved() {
+        return this.pieceToBeMoved;
+    }
+    /* Nested clases */
     public static final class CapturingMove extends Move {
         final Piece attackedPiece;
 
@@ -47,7 +53,7 @@ public abstract class Move {
             // except the piece that is currently being moved
             for (final Piece p : this.board.currentPlayer().getActivePieces()) {
                 // TODO implement hashcode and equals for Piece
-                if (!this.pieceMoved.equals(p)) {
+                if (!this.pieceToBeMoved.equals(p)) {
                     builder.setPiece(p);
                 }
             }
@@ -57,14 +63,14 @@ public abstract class Move {
                 builder.setPiece(p);
             }
 
-            // TODO set current piece that is being moved
-            builder.setPiece(null);
+            // the piece to be moved will call its method on the Piece class
+            // which takes in a move and returns a new Piece in the desired position
+            // as defined by the move that is passed in.
+            builder.setPiece(this.pieceToBeMoved.movePiece(this));
             // update next player to move
             builder.setNextMoveMaker((this.board.currentPlayer().getOpponent().getAlliance()));
 
             return builder.build();
         }
     }
-
-
 }

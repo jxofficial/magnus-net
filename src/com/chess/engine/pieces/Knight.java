@@ -17,26 +17,6 @@ public class Knight extends Piece {
         super(pieceAlliance, piecePosition, PieceType.KNIGHT);
     }
 
-    private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidateOffset == -17 || candidateOffset == -10
-                || candidateOffset == 6 || candidateOffset == 15));
-    }
-
-    private static boolean isSecondColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.SECOND_COLUMN[currentPosition] && (candidateOffset == -10
-                || candidateOffset == 6);
-    }
-
-    private static boolean isSeventhColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.SEVENTH_COLUMN[currentPosition] && (candidateOffset == -6
-                || candidateOffset == 10);
-    }
-
-    private static boolean isEighthColumnExclusion(int currentPosition, int candidateOffset) {
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidateOffset == 17 || candidateOffset == 10
-                || candidateOffset == -6 || candidateOffset == -15));
-    }
-
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
 
@@ -72,6 +52,35 @@ public class Knight extends Piece {
 
         return legalMoves;
     }
+
+    @Override
+    public Knight movePiece(final Move move) {
+        return new Knight(move.getPieceToBeMoved().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
+    /* Private helper methods to ensure piece that exceeds board coordinates
+     * is not considered when calculating legal moves
+     */
+    private static boolean isFirstColumnExclusion(int currentPosition, int candidateOffset) {
+        return BoardUtils.FIRST_COLUMN[currentPosition] && ((candidateOffset == -17 || candidateOffset == -10
+                || candidateOffset == 6 || candidateOffset == 15));
+    }
+
+    private static boolean isSecondColumnExclusion(int currentPosition, int candidateOffset) {
+        return BoardUtils.SECOND_COLUMN[currentPosition] && (candidateOffset == -10
+                || candidateOffset == 6);
+    }
+
+    private static boolean isSeventhColumnExclusion(int currentPosition, int candidateOffset) {
+        return BoardUtils.SEVENTH_COLUMN[currentPosition] && (candidateOffset == -6
+                || candidateOffset == 10);
+    }
+
+    private static boolean isEighthColumnExclusion(int currentPosition, int candidateOffset) {
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidateOffset == 17 || candidateOffset == 10
+                || candidateOffset == -6 || candidateOffset == -15));
+    }
+
     @Override
     public String toString() {
         return PieceType.KNIGHT.toString();
