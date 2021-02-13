@@ -76,13 +76,13 @@ public abstract class Player {
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         // we make a move here to produce a transition board, assume it's a white move
-        // a transition board is a possibly valid board
+        // a transition board is a possibly valid board that reflects the move that has been made
         final Board transitionBoard = move.execute();
         final int opponentKingPosition = transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition();
         final Collection<Move> playerLegalMoves = transitionBoard.currentPlayer().getLegalMoves();
 
         // hence, here we are seeing from the black POV
-        // since white has already made a move for white, we check all of black's moves, and see if it attacks the white king
+        // since white has already made a move, we check all of black's moves, and see if any move attacks the white king
         final Collection<Move> attacksOnPlayerKing = Player.calculateAttacksOnTile(opponentKingPosition, playerLegalMoves);
 
         if (!attacksOnPlayerKing.isEmpty()) {
