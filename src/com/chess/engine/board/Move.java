@@ -1,6 +1,7 @@
 package com.chess.engine.board;
 
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.pieces.Rook;
 
 import static com.chess.engine.board.Board.*;
 
@@ -14,6 +15,10 @@ public abstract class Move {
         this.board = board;
         this.pieceToBeMoved = pieceMoved;
         this.destinationCoordinate = destinationCoordinate;
+    }
+
+    public boolean isCastlingMove(){
+        return false;
     }
 
     public Board execute() {
@@ -96,21 +101,40 @@ public abstract class Move {
         }
     }
 
-    static abstract class CastleMove extends Move {
-        public CastleMove(Board board, Piece pieceMoved, int destinationCoordinate) {
+    public static abstract class CastleMove extends Move {
+        protected final Rook rook;
+        protected final int castleRookStart;
+        protected final int castleRookDestination;
+
+        public CastleMove(final Board board,
+                          final Piece pieceMoved,
+                          final int destinationCoordinate,
+                          final Rook rook,
+                          final int castleRookStart,
+                          final int castleRookDestination
+                          ) {
             super(board, pieceMoved, destinationCoordinate);
+            this.rook = rook;
+            this.castleRookStart = castleRookStart;
+            this.castleRookDestination = castleRookDestination;
+        }
+
+        @Override
+        public boolean isCastlingMove() {
+            return true;
         }
     }
 
-    public final class KingsideCastleMove extends Move {
-        public KingsideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate) {
-            super(board, pieceMoved, destinationCoordinate);
+    public final class KingsideCastleMove extends CastleMove {
+        public KingsideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate, Rook rook, int castleRookStart, int castleRookDestination) {
+            super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
         }
     }
 
-    public final class QueensideCastleMove extends Move {
-        public QueensideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate) {
-            super(board, pieceMoved, destinationCoordinate);
+    public final class QueensideCastleMove extends CastleMove {
+        public QueensideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate,
+                                   Rook rook, int castleRookStart, int castleRookDestination) {
+            super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
         }
     }
 
@@ -130,10 +154,10 @@ public abstract class Move {
             throw new RuntimeException("MoveFactory cannot be instantiated");
         }
 
-        public static Move createMove(final Board board, final int currCoordinate, final int destinationCooridnate) {
+        public static Move createMove(final Board board, final int currCoordinate, final int destinationCoordinate) {
             for (final Move m : board.getAllLegalMoves()) {
                 if(m.getCurrCoordinate() == currCoordinate
-                    && m.getDestinationCoordinate() == destinationCooridnate
+                    && m.getDestinationCoordinate() == destinationCoordinate
                 ) return m;
             }
 
