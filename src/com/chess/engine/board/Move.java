@@ -3,7 +3,7 @@ package com.chess.engine.board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
-import static com.chess.engine.board.Board.*;
+import static com.chess.engine.board.Board.Builder;
 
 public abstract class Move {
     final Board board;
@@ -32,7 +32,7 @@ public abstract class Move {
         }
 
         // set all of opponent's pieces on the board
-        for (final Piece p : this.board.currentPlayer().getActivePieces()) {
+        for (final Piece p : this.board.currentPlayer().getOpponent().getActivePieces()) {
             builder.setPiece(p);
         }
 
@@ -123,11 +123,43 @@ public abstract class Move {
         public boolean isCastlingMove() {
             return true;
         }
+
+        @Override
+        public Board execute() {
+            final Builder builder = new Builder();
+            // this.pieceToBeMoved is the king
+            for (final Piece p : this.board.currentPlayer().getActivePieces()) {
+                // set everything to be the same as original board
+                // except for rook and king
+                if (!this.pieceToBeMoved.equals(p) && !this.rook.equals(p)) {
+                    builder.setPiece(p);
+                }
+            }
+
+            // set all of opponent's pieces on the board
+            for (final Piece p : this.board.currentPlayer().getOpponent().getActivePieces()) {
+                builder.setPiece(p);
+            }
+
+            builder.setPiece((this.pieceToBeMoved.movePiece(this)));
+            // TODO: set isFirstMove in Rook piece to false
+            builder.setPiece(new Rook(this.rook.getPieceAlliance(), this.castleRookDestination));
+
+            builder.setNextMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+
+            // returns new Board(builder);
+            return builder.build();
+        }
     }
 
     public final class KingsideCastleMove extends CastleMove {
         public KingsideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate, Rook rook, int castleRookStart, int castleRookDestination) {
             super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
+        }
+
+        @Override
+        public String toString() {
+            return "0-0";
         }
     }
 
@@ -135,6 +167,12 @@ public abstract class Move {
         public QueensideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate,
                                    Rook rook, int castleRookStart, int castleRookDestination) {
             super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
+        }
+
+
+        @Override
+        public String toString() {
+            return "0-0-0";
         }
     }
 
