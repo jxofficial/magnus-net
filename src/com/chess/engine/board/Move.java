@@ -26,7 +26,8 @@ public abstract class Move {
     public Piece getPieceToBeMoved() {
         return this.pieceToBeMoved;
     }
-    /* Nested clases */
+
+    /* Nested classes */
     public static final class CapturingMove extends Move {
         final Piece attackedPiece;
 

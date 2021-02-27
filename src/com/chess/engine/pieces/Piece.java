@@ -5,6 +5,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public abstract class Piece {
     protected final PieceType pieceType;
@@ -38,6 +39,23 @@ public abstract class Piece {
     public int getPiecePosition() { return this.piecePosition; }
     public PieceType getPieceType() {
         return pieceType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceType, piecePosition, pieceAlliance, isFirstMove);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Piece)) return false;
+        final Piece otherPiece = (Piece) other;
+        return pieceAlliance == otherPiece.getPieceAlliance()
+                && pieceType == otherPiece.getPieceType()
+                && piecePosition == otherPiece.getPiecePosition()
+                && isFirstMove == otherPiece.isFirstMove();
+
     }
 
     /* Nested enum */
