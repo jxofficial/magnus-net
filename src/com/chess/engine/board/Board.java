@@ -21,6 +21,9 @@ public class Board {
 
     private Board(Builder builder) {
         this.gameBoard = createGameBoard(builder);
+        // derived from gameBoard which is a list of Tiles
+        // each Tile has coordinate
+        // and in the case of OccupiedTile, it has a Piece field
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
 
