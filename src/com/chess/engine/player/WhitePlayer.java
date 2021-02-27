@@ -4,8 +4,11 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.CastleMove;
+import com.chess.engine.board.Move.KingsideCastleMove;
+import com.chess.engine.board.Move.QueensideCastleMove;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ public class WhitePlayer extends Player {
     }
 
     @Override
-    protected Collection<Move> calculateKingCastles(
+    protected Collection<CastleMove> calculateCastleMoves(
             Collection<Move> playerLegalMoves, Collection<Move> opponentLegalMoves) {
         final List<CastleMove> castleMoves = new ArrayList<>();
 
@@ -31,8 +34,10 @@ public class WhitePlayer extends Player {
                     // does not pass through check
                     if (Player.calculateAttacksOnTile(61, opponentLegalMoves).isEmpty()
                             && Player.calculateAttacksOnTile(62, opponentLegalMoves).isEmpty()) {
-                        // TODO: add new KingsideCastleMove
-                        castleMoves.add(null);
+                        castleMoves.add(
+                                new KingsideCastleMove(
+                                        this.board, this.playerKing, 62,
+                                        (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 61));
                     }
                 }
             // queenside castle
@@ -42,8 +47,10 @@ public class WhitePlayer extends Player {
                 final Tile rookTile = this.board.getTile(56);
                 if (rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
                     // TODO: check that king does not pass through check
-                    // TODO: add new QueensideCastleMove
-                    castleMoves.add(null);
+                    castleMoves.add(
+                            new QueensideCastleMove(
+                                    this.board, this.playerKing, 58,
+                                    (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 59));
                 }
             }
         }

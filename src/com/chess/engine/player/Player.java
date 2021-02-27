@@ -3,9 +3,11 @@ package com.chess.engine.player;
 import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.CastleMove;
 import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Piece;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +25,9 @@ public abstract class Player {
 
         this.board = board;
         this.playerKing = establishKing();
-        this.legalMoves = legalMoves;
+        // legal moves + castle moves
+        this.legalMoves = ImmutableList.copyOf(
+                Iterables.concat(legalMoves, calculateCastleMoves(legalMoves, opponentLegalMoves)));
         this.isInCheck = !Player
                 .calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegalMoves)
                 .isEmpty();
@@ -95,7 +99,7 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    protected abstract Collection<Move> calculateKingCastles(
+    protected abstract Collection<CastleMove> calculateCastleMoves(
             Collection<Move> playerLegalMoves,
             Collection<Move> opponentLegalMoves);
 

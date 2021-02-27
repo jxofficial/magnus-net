@@ -152,7 +152,9 @@ public abstract class Move {
         }
     }
 
-    public final class KingsideCastleMove extends CastleMove {
+    // needs to be static so that you can instantiate it without an instance of Move
+    // Move cannot be instantiated anyway
+    public static final class KingsideCastleMove extends CastleMove {
         public KingsideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate, Rook rook, int castleRookStart, int castleRookDestination) {
             super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
         }
@@ -163,7 +165,9 @@ public abstract class Move {
         }
     }
 
-    public final class QueensideCastleMove extends CastleMove {
+    // needs to be static so that you can instantiate it without an instance of Move
+    // Move cannot be instantiated anyway
+    public static final class QueensideCastleMove extends CastleMove {
         public QueensideCastleMove(Board board, Piece pieceMoved, int destinationCoordinate,
                                    Rook rook, int castleRookStart, int castleRookDestination) {
             super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
