@@ -6,6 +6,7 @@ import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
 import com.chess.engine.pieces.*;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -88,9 +89,14 @@ public class Board {
         return gameBoard.get(tileCoordinate);
     }
 
+
+    // uses builder's mapping of coordinate to piece
+    // to create a list of Tiles
     private static List<Tile> createGameBoard(final Builder builder) {
         final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
         for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+            // if boardConfig map is null, Tile.createTile will create an empty tile
+            // else create an occupied tile
             tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
         }
 
@@ -138,6 +144,11 @@ public class Board {
         builder.setNextMoveMaker(Alliance.WHITE);
 
         return builder.build();
+    }
+
+    public Iterable<Move> getAllLegalMoves() {
+        return Iterables.unmodifiableIterable(
+                Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
 
     public static class Builder {
