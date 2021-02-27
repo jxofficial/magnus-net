@@ -1,6 +1,5 @@
 package com.chess.gui;
 
-import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 
 import javax.swing.*;
@@ -14,6 +13,8 @@ public class Table {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
+    private final Color LIGHT_TILE_COLOR = Color.decode("#eeeed2");
+    private final Color DARK_TILE_COLOR = Color.decode("#769656");
 
     public Table() {
         this.gameFrame = new JFrame("magnus-net");
@@ -44,6 +45,11 @@ public class Table {
         });
 
         fileMenu.add(openPGN);
+
+        final JMenuItem exit = new JMenuItem("Quit");
+        exit.addActionListener(actionEvent -> System.exit(0));
+        fileMenu.add(exit);
+
         return fileMenu;
     }
 
@@ -75,6 +81,9 @@ public class Table {
         }
 
         private void assignTileColor() {
+            // where ever I am, I + my row
+            boolean isLightTile = ((tileCoordinate + tileCoordinate / 8) % 2 == 0);
+            setBackground(isLightTile ? LIGHT_TILE_COLOR : DARK_TILE_COLOR);
         }
     }
 }
