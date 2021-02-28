@@ -45,11 +45,14 @@ public class BlackPlayer extends Player {
                     !this.board.getTile(3).isTileOccupied()) {
                 final Tile rookTile = this.board.getTile(0);
                 if (rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
-                    // TODO: check that king does not pass through check
-                    // TODO: add new QueensideCastleMove
-                    castleMoves.add(new QueensideCastleMove(
-                            this.board, this.playerKing, 2,
-                            (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
+                    // check that king does not pass through check
+                    if (Player.calculateAttacksOnTile(2, opponentLegalMoves).isEmpty()
+                            && Player.calculateAttacksOnTile(3, opponentLegalMoves).isEmpty()) {
+
+                        castleMoves.add(new QueensideCastleMove(
+                                this.board, this.playerKing, 2,
+                                (Rook) rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
+                    }
                 }
             }
         }

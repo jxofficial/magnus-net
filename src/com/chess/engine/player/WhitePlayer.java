@@ -46,7 +46,9 @@ public class WhitePlayer extends Player {
                         !this.board.getTile(59).isTileOccupied()) {
                 final Tile rookTile = this.board.getTile(56);
                 if (rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
-                    // TODO: check that king does not pass through check
+                    // check that king does not pass through check
+                    if (Player.calculateAttacksOnTile(58, opponentLegalMoves).isEmpty() &&
+                            Player.calculateAttacksOnTile(59, opponentLegalMoves).isEmpty())
                     castleMoves.add(
                             new QueensideCastleMove(
                                     this.board, this.playerKing, 58,

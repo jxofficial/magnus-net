@@ -1,9 +1,12 @@
 package com.chess.gui;
 
+import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +83,13 @@ public class Table {
             validate();
         }
 
+
+//        private void assignTilePieceIcon(final Board board) {
+//            this.removeAll();
+//            if (board.getTile(this.tileCoordinate).isTileOccupied()) {
+//                final BufferedImage img = ImageIO.read(new File())
+//            }
+//        }
         private void assignTileColor() {
             // where ever I am, I + my row
             boolean isLightTile = ((tileCoordinate + tileCoordinate / 8) % 2 == 0);
