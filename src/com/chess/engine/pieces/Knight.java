@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Knight extends Piece {
-    private static final int[] CANDIDATE_MOVE_COORDINATES = {-17, -15, -10, -6, 6, 10, -15, 17};
+    private static final int[] CANDIDATE_MOVE_COORDINATES = {-17, -15, -10, -6, 6, 10, 15, 17};
 
     public Knight(final Alliance pieceAlliance, final int piecePosition) {
         super(pieceAlliance, piecePosition, PieceType.KNIGHT, true);
