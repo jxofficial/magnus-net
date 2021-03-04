@@ -173,7 +173,6 @@ public abstract class Move {
             super(board, pieceMoved, destinationCoordinate, rook, castleRookStart, castleRookDestination);
         }
 
-
         @Override
         public String toString() {
             return "0-0-0";
@@ -196,6 +195,7 @@ public abstract class Move {
             throw new RuntimeException("MoveFactory cannot be instantiated");
         }
 
+        // return a move given the board and the intended coordinates
         public static Move createMove(final Board board, final int currCoordinate, final int destinationCoordinate) {
             for (final Move m : board.getAllLegalMoves()) {
                 if(m.getCurrCoordinate() == currCoordinate
