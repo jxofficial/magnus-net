@@ -14,7 +14,13 @@ public class Pawn extends Piece {
     private static final int[] CANDIDATE_MOVE_COORDINATES = {7, 8, 9, 16};
 
     public Pawn(Alliance pieceAlliance, int piecePosition) {
-        super(pieceAlliance, piecePosition, PieceType.PAWN);
+        super(pieceAlliance, piecePosition, PieceType.PAWN, true);
+    }
+
+    public Pawn(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove) {
+        super(alliance, piecePosition, PieceType.PAWN, isFirstMove);
     }
 
     @Override
@@ -35,10 +41,10 @@ public class Pawn extends Piece {
                     (BoardUtils.SECOND_RANK[this.piecePosition] && this.pieceAlliance.isWhite())) {
                 final int behindCandidateDestinationCoordinate =
                         this.piecePosition + (this.pieceAlliance.getDirection() * 8);
-                if (board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
+                if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
                     && !board.getTile(candidateDestinationCoordinate).isTileOccupied()
                 ) {
-                    legalMoves.add(new Move.NormalMove(board, this, candidateDestinationCoordinate));
+                    legalMoves.add(new Move.PawnJumpMove(board, this, candidateDestinationCoordinate));
                 }
             } else if (candidateOffset == 7 &&
                     !(BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite()

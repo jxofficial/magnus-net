@@ -13,11 +13,10 @@ public abstract class Piece {
     protected final Alliance pieceAlliance;
     protected final boolean isFirstMove;
 
-    public Piece(Alliance pieceAlliance, int piecePosition, final PieceType pieceType) {
+    public Piece(Alliance pieceAlliance, int piecePosition, final PieceType pieceType, final Boolean isFirstMove) {
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
-        // TODO update this
-        this.isFirstMove = false;
+        this.isFirstMove = isFirstMove;
         this.pieceType = pieceType;
     }
 
