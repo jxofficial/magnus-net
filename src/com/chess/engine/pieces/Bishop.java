@@ -27,7 +27,9 @@ public class Bishop extends Piece {
             while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateOffset)
                         || isEighthColumnExclusion(candidateDestinationCoordinate, candidateOffset)
-                )
+                ) {
+                    break;
+                }
 
                     candidateDestinationCoordinate += candidateOffset;
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
