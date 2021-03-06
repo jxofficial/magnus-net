@@ -31,10 +31,14 @@ public class Table {
     private final BoardPanel boardPanel;
 
     private Board chessboard;
+
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
+
     private BoardDirection boardDirection;
+
+    private boolean shouldHighlightLegalMoves;
 
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
@@ -43,7 +47,13 @@ public class Table {
     private final Color DARK_TILE_COLOR = Color.decode("#769656");
 
     public Table() {
+        // Board is a list of Tiles
+        // and also keeps track of white, black, current players
+        // and also keeps track of pieces
         this.chessboard = Board.createStandardBoard();
+
+        // preferences
+        this.shouldHighlightLegalMoves = true;
 
         // window
         this.gameFrame = new JFrame("magnus-net");
@@ -99,6 +109,19 @@ public class Table {
             }
         });
         preferencesMenu.add(flipBoard);
+
+        preferencesMenu.addSeparator();
+
+        final JCheckBoxMenuItem shouldHighlightLegalMovesCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves",
+                true);
+        shouldHighlightLegalMovesCheckbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shouldHighlightLegalMoves = shouldHighlightLegalMovesCheckbox.isSelected();
+            }
+        });
+        preferencesMenu.add(shouldHighlightLegalMovesCheckbox);
+
         return preferencesMenu;
     }
 
@@ -135,6 +158,9 @@ public class Table {
             super(new GridBagLayout());
             this.tileCoordinate = tileCoordinate;
             setPreferredSize(TILE_PANEL_DIMENSION);
+            // basically these two fns are encapsulated in TilePanel#drawTile (which also includes
+            // BoardPanel#highlightLegalMoves)
+            // drawTile gn used in BoardPanel#drawBoard for all subsequent re-renders of the board
             assignTileColor();
             assignTilePieceIcon(chessboard);
 
@@ -255,7 +281,7 @@ public class Table {
         }
 
         private void highlightLegalMoves(final Board board) {
-            if (true) {
+            if (shouldHighlightLegalMoves) {
                 // running calculatePieceToBeMovedLegalMoves(board) ensures
                 // 1. there is a clicked piece
                 // 2. clicked piece belongs to current player

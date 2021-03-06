@@ -12,6 +12,7 @@ import java.util.*;
 
 public class Board {
     private final List<Tile> gameBoard;
+
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
 
