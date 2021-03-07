@@ -3,9 +3,13 @@ package com.chess.gui;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.CastleMove;
 import com.chess.engine.board.Tile;
+import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -290,12 +294,17 @@ public class Table {
             setBackground(isLightTile ? LIGHT_TILE_COLOR : DARK_TILE_COLOR);
         }
 
+        // TODO: highlight castle moves that do not
         private void highlightLegalMoves(final Board board) {
             if (shouldHighlightLegalMoves) {
                 // running calculatePieceToBeMovedLegalMoves(board) ensures
                 // 1. there is a clicked piece
                 // 2. clicked piece belongs to current player
                 for (final Move move : calculatePieceToBeMovedLegalMoves(board)) {
+                    MoveTransition transition = board.currentPlayer().makeMove(move);
+                    if(!transition.getMoveStatus().isDone()){
+                        continue;
+                    }
                     if (move.getDestinationCoordinate() == this.tileCoordinate) {
                         try {
                             ImageIcon greenDot = new ImageIcon(ImageIO.read(new File("art/misc/green_dot.png")));
@@ -311,7 +320,17 @@ public class Table {
         private Collection<Move> calculatePieceToBeMovedLegalMoves(final Board board) {
             if (humanMovedPiece != null
                     && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
-                return humanMovedPiece.calculateLegalMoves(board);
+                if (humanMovedPiece instanceof King) {
+                    Collection<CastleMove> castleMoves = board.currentPlayer().calculateCastleMoves(
+                            board.currentPlayer().getLegalMoves(),
+                            board.currentPlayer().getOpponent().getLegalMoves()
+                    );
+
+                    return ImmutableList.copyOf(
+                            Iterables.concat(castleMoves, humanMovedPiece.calculateLegalMoves(board)));
+                } else {
+                    return humanMovedPiece.calculateLegalMoves(board);
+                }
             }
             return Collections.emptyList();
         }

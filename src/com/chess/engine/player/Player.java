@@ -99,7 +99,7 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
-    protected abstract Collection<CastleMove> calculateCastleMoves(
+    public abstract Collection<CastleMove> calculateCastleMoves(
             Collection<Move> playerLegalMoves,
             Collection<Move> opponentLegalMoves);
 

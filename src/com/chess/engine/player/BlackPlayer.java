@@ -21,7 +21,7 @@ public class BlackPlayer extends Player {
     }
 
     @Override
-    protected Collection<CastleMove> calculateCastleMoves(
+    public Collection<CastleMove> calculateCastleMoves(
             Collection<Move> playerLegalMoves, Collection<Move> opponentLegalMoves) {
         final List<Move.CastleMove> castleMoves = new ArrayList<>();
 
