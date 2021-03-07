@@ -57,6 +57,9 @@ public abstract class Move {
         return null;
     }
 
+    public Board getBoard() {
+        return board;
+    }
 
     public Board execute() {
         final Builder builder = new Builder();
@@ -136,7 +139,7 @@ public abstract class Move {
         }
     }
 
-    public static final class PawnMove extends Move {
+    public static class PawnMove extends Move {
         public PawnMove(Board board, Piece pieceMoved, int destinationCoordinate) {
             super(board, pieceMoved, destinationCoordinate);
         }
@@ -175,6 +178,67 @@ public abstract class Move {
             // eg exd4
             return BoardUtils.getPGNFromCoordinate(this.pieceToBeMoved.getPiecePosition()).charAt(0)
                     + "x" + BoardUtils.getPGNFromCoordinate(this.destinationCoordinate);
+        }
+    }
+
+    public static final class PawnPromotionMove extends PawnMove {
+        final Move decoratedMove;
+        final Pawn pawnToBePromoted;
+
+        public PawnPromotionMove(final Move decoratedMove) {
+            super(decoratedMove.getBoard(),
+                    decoratedMove.getPieceToBeMoved(),
+                    decoratedMove.getDestinationCoordinate()
+                    );
+            this.decoratedMove = decoratedMove;
+            this.pawnToBePromoted = (Pawn) decoratedMove.getPieceToBeMoved();
+        }
+
+        @Override
+        public Board execute() {
+            // the board with the pawn move
+            final Board pawnMovedBoard = this.decoratedMove.execute();
+            final Builder builder = new Builder();
+            for (final Piece piece : pawnMovedBoard.currentPlayer().getActivePieces()) {
+                if (!this.pawnToBePromoted.equals(piece)) {
+                    builder.setPiece(piece);
+                }
+            }
+
+            for (final Piece piece : pawnMovedBoard.currentPlayer().getOpponent().getActivePieces()) {
+               builder.setPiece(piece);
+            }
+
+            // change pawn to queen
+            builder.setPiece(this.pawnToBePromoted.getPromotionPiece().movePiece(this));
+            builder.setNextMoveMaker(pawnMovedBoard.currentPlayer().getOpponent().getAlliance());
+
+            return builder.build();
+        }
+
+        @Override
+        public boolean isCapturingMove() {
+            return this.decoratedMove.isCapturingMove();
+        }
+
+        @Override
+        public Piece getAttackedPiece() {
+            return this.decoratedMove.getAttackedPiece();
+        }
+
+        @Override
+        public String toString() {
+            return "";
+        }
+
+        @Override
+        public int hashCode() {
+            return decoratedMove.hashCode() + (31 * pawnToBePromoted.hashCode());
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return this == other || other instanceof PawnPromotionMove && super.equals(other);
         }
     }
 
@@ -223,7 +287,8 @@ public abstract class Move {
         @Override
         public Board execute() {
             final Builder builder = new Builder();
-            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.pieceToBeMoved.equals(piece)).forEach(builder::setPiece);
+            this.board.currentPlayer().getActivePieces().stream().filter(piece -> !this.pieceToBeMoved.equals(piece))
+                    .forEach(builder::setPiece);
             this.board.currentPlayer().getOpponent().getActivePieces().forEach(builder::setPiece);
             final Pawn movedPawn = (Pawn) this.pieceToBeMoved.movePiece(this);
             builder.setPiece(movedPawn);
@@ -258,30 +323,22 @@ public abstract class Move {
 
         @Override
         public Board execute() {
-            final Builder builder = new Builder();
-            // this.pieceToBeMoved is the king
-            for (final Piece p : this.board.currentPlayer().getActivePieces()) {
-                // set everything to be the same as original board
-                // except for rook and king
-                if (!this.pieceToBeMoved.equals(p) && !this.rook.equals(p)) {
-                    builder.setPiece(p);
+            final Board.Builder builder = new Builder();
+            for (final Piece piece : this.board.getAllPieces()) {
+                // not king or rook
+                if (!this.pieceToBeMoved.equals(piece) && !this.rook.equals(piece)) {
+                    builder.setPiece(piece);
                 }
             }
-
-            // set all of opponent's pieces on the board
-            for (final Piece p : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(p);
-            }
-
-            builder.setPiece((this.pieceToBeMoved.movePiece(this)));
-            // TODO: set isFirstMove in Rook piece to false
-            builder.setPiece(new Rook(this.rook.getPieceAlliance(), this.castleRookDestination));
-
+            // king
+            builder.setPiece(this.pieceToBeMoved.movePiece(this));
+            // calling movePiece here doesn't work, we need to explicitly create a new Rook
+            builder.setPiece(new Rook(this.rook.getPieceAlliance(), this.castleRookDestination, false));
             builder.setNextMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-
-            // returns new Board(builder);
             return builder.build();
+            // returns new Board(builder);
         }
+
 
         @Override
         public int hashCode() {
@@ -339,6 +396,7 @@ public abstract class Move {
         public String toString() {
             return "0-0-0";
         }
+
         @Override
         public boolean equals(Object other) {
             return this == other ||
@@ -360,6 +418,7 @@ public abstract class Move {
 
     public static class MoveFactory {
         public static final Move INVALID_MOVE = new InvalidMove();
+
         private MoveFactory() {
             throw new RuntimeException("MoveFactory cannot be instantiated");
         }

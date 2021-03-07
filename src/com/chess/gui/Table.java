@@ -208,7 +208,7 @@ public class Table {
                             destinationTile = null;
                             humanMovedPiece = null;
                         }
-                        // always redraw the board after ANY and ALL clicks
+                        // always redraw the board after ANY and ALL left clicks
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -296,7 +296,6 @@ public class Table {
                 // 1. there is a clicked piece
                 // 2. clicked piece belongs to current player
                 for (final Move move : calculatePieceToBeMovedLegalMoves(board)) {
-                    // TODO: check if its supposed to be destination coordinate and not current coordinate
                     if (move.getDestinationCoordinate() == this.tileCoordinate) {
                         try {
                             ImageIcon greenDot = new ImageIcon(ImageIO.read(new File("art/misc/green_dot.png")));
