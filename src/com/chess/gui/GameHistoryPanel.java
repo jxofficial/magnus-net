@@ -13,14 +13,14 @@ import java.util.List;
 public class GameHistoryPanel extends JPanel {
     private final DataModel model;
     private final JScrollPane scrollPane;
-    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100,400);
+    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 400);
 
     GameHistoryPanel() {
         this.setLayout(new BorderLayout());
         this.model = new DataModel();
         final JTable table = new JTable(model);
         table.setRowHeight(15);
-        this.scrollPane  = new JScrollPane(table);
+        this.scrollPane = new JScrollPane(table);
         scrollPane.setColumnHeaderView(table.getTableHeader());
         scrollPane.setPreferredSize(HISTORY_PANEL_DIMENSION);
         this.add(scrollPane, BorderLayout.CENTER);
@@ -30,7 +30,7 @@ public class GameHistoryPanel extends JPanel {
     void redo(final Board board, final MoveLog moveHistory) {
         int currRow = 0;
         this.model.clear();
-        for (final Move m: moveHistory.getMoves()) {
+        for (final Move m : moveHistory.getMoves()) {
             final String movePGN = m.toString();
             if (m.getPieceToBeMoved().getPieceAlliance().isWhite()) {
                 this.model.setValueAt(movePGN, currRow, 0);
@@ -44,8 +44,10 @@ public class GameHistoryPanel extends JPanel {
             final Move lastMove = moveHistory.getMoves().get(moveHistory.size() - 1);
             String movePGN = lastMove.toString();
 
+            // add either + or # as needed
             if (lastMove.getPieceToBeMoved().getPieceAlliance().isWhite()) {
-                // add either + or # as needed
+                this.model.setValueAt(movePGN + calculateCheckANdCheckMateHash(board), currRow, 0);
+            } else if (lastMove.getPieceToBeMoved().getPieceAlliance().isBlack()) {
                 this.model.setValueAt(movePGN + calculateCheckANdCheckMateHash(board), currRow - 1, 1);
             }
 
@@ -114,8 +116,10 @@ public class GameHistoryPanel extends JPanel {
 
             if (column == 0) {
                 currRow.setWhiteMove((String) val);
+                fireTableRowsInserted(row, row);
             } else if (column == 1) {
                 currRow.setBlackMove((String) val);
+                fireTableRowsUpdated(row, column);
             }
         }
 

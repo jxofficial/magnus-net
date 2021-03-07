@@ -28,7 +28,10 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table {
     private final JFrame gameFrame;
+    private final GameHistoryPanel gameHistoryPanel;
+    private final TakenPiecesPanel takenPiecesPanel;
     private final BoardPanel boardPanel;
+    private final MoveLog moveLog;
 
     private Board chessboard;
 
@@ -48,9 +51,13 @@ public class Table {
 
     public Table() {
         // Board is a list of Tiles
-        // and also keeps track of white, black, current players
-        // and also keeps track of pieces
+        // which keeps track of white, black, current players
+        // and also pieces
         this.chessboard = Board.createStandardBoard();
+        this.moveLog = new MoveLog();
+
+        this.gameHistoryPanel = new GameHistoryPanel();
+        this.takenPiecesPanel = new TakenPiecesPanel();
 
         // preferences
         this.shouldHighlightLegalMoves = true;
@@ -69,9 +76,10 @@ public class Table {
         this.boardDirection = BoardDirection.NORMAL;
 
         // window
-        this.gameFrame.add(boardPanel, BorderLayout.CENTER);
+        this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
+        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
+        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.setVisible(true);
-
     }
 
     private JMenuBar createTableMenuBar() {
@@ -193,7 +201,7 @@ public class Table {
                             final MoveTransition transition = chessboard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessboard = transition.getTransitionBoard();
-                                // TODO: add move that was made to move log
+                                moveLog.addMove(move);
                             }
 
                             sourceTile = null;
@@ -204,6 +212,8 @@ public class Table {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                gameHistoryPanel.redo(chessboard, moveLog);
+                                takenPiecesPanel.redo(moveLog);
                                 boardPanel.drawBoard(chessboard);
                             }
                         });
@@ -312,8 +322,8 @@ public class Table {
     public static class MoveLog {
         private final List<Move> moves;
 
-        public MoveLog(List<Move> moves) {
-            this.moves = moves;
+        public MoveLog() {
+            this.moves = new ArrayList<>();
         }
 
         public List<Move> getMoves() {

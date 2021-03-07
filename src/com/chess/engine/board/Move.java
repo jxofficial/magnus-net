@@ -143,6 +143,11 @@ public abstract class Move {
         public PawnMove(Board board, Piece pieceMoved, int destinationCoordinate) {
             super(board, pieceMoved, destinationCoordinate);
         }
+        @Override
+        public String toString() {
+            return BoardUtils.getPGNFromCoordinate(this.destinationCoordinate);
+        }
+
     }
 
     public static class PawnCapturingMove extends CapturingMove {
@@ -167,6 +172,11 @@ public abstract class Move {
     public static final class PawnJumpMove extends Move {
         public PawnJumpMove(Board board, Piece pieceMoved, int destinationCoordinate) {
             super(board, pieceMoved, destinationCoordinate);
+        }
+
+        @Override
+        public String toString() {
+            return BoardUtils.getPGNFromCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -250,7 +260,7 @@ public abstract class Move {
 
     public static final class InvalidMove extends Move {
         public InvalidMove() {
-            super(null, null, -1);
+            super(null, -1);
         }
 
         @Override
