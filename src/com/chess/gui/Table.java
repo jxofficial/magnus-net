@@ -308,6 +308,40 @@ public class Table {
         }
     }
 
+
+    public static class MoveLog {
+        private final List<Move> moves;
+
+        public MoveLog(List<Move> moves) {
+            this.moves = moves;
+        }
+
+        public List<Move> getMoves() {
+            return this.moves;
+        }
+
+        public void addMove(final Move move) {
+            this.moves.add(move);
+        }
+
+        public int size() {
+            return this.moves.size();
+        }
+
+        public void clear() {
+            this.moves.clear();
+        }
+
+        public Move removeMove(int i) {
+            return this.moves.remove(i);
+        }
+
+        public boolean removeMove(final Move move) {
+            return this.moves.remove(move);
+        }
+
+    }
+
     public enum BoardDirection {
         NORMAL {
             @Override

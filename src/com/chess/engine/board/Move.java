@@ -3,23 +3,61 @@ package com.chess.engine.board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
+import java.util.Objects;
+
 import static com.chess.engine.board.Board.Builder;
 
 public abstract class Move {
-    final Board board;
-    final Piece pieceToBeMoved;
-    final int destinationCoordinate;
+    protected final Board board;
+    protected final Piece pieceToBeMoved;
+    protected final int destinationCoordinate;
+    protected final boolean isFirstMove;
+
     public static final Move INVALID_MOVE = new InvalidMove();
 
     public Move(Board board, Piece pieceMoved, int destinationCoordinate) {
         this.board = board;
         this.pieceToBeMoved = pieceMoved;
         this.destinationCoordinate = destinationCoordinate;
+        this.isFirstMove = pieceMoved.isFirstMove();
+    }
+
+    public Move(Board board, int destinationCoordinate) {
+        this.board = board;
+        this.destinationCoordinate = destinationCoordinate;
+        this.pieceToBeMoved = null;
+        this.isFirstMove = false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(destinationCoordinate, pieceToBeMoved.hashCode(), pieceToBeMoved.getPiecePosition());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Move)) return false;
+
+        final Move otherMove = (Move) other;
+        return getDestinationCoordinate() == otherMove.getDestinationCoordinate() &&
+                getPieceToBeMoved().equals(otherMove.getPieceToBeMoved()) &&
+                getCurrCoordinate() == otherMove.getCurrCoordinate();
+
     }
 
     public boolean isCastlingMove(){
         return false;
     }
+
+    public boolean isCapturingMove() {
+        return false;
+    }
+
+    public Piece getAttackedPiece() {
+        return null;
+    }
+
 
     public Board execute() {
         final Builder builder = new Builder();
@@ -66,6 +104,16 @@ public abstract class Move {
         }
 
         @Override
+        public boolean isCapturingMove() {
+            return true;
+        }
+
+        @Override
+        public Piece getAttackedPiece() {
+            return this.attackedPiece;
+        }
+
+        @Override
         public Board execute() {
             return null;
         }
@@ -74,6 +122,20 @@ public abstract class Move {
     public static final class NormalMove extends Move {
         public NormalMove(Board board, Piece pieceMoved, int destinationCoordinate) {
             super(board, pieceMoved, destinationCoordinate);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            if (!(other instanceof NormalMove)) return false;
+
+            return super.equals(other);
+        }
+
+        @Override
+        public String toString() {
+            return pieceToBeMoved.getPieceType().toString()
+                + BoardUtils.getPGNFromCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -87,6 +149,13 @@ public abstract class Move {
         public PawnCapturingMove(Board board, Piece pieceMoved, int destinationCoordinate, Piece attackedPiece) {
             super(board, pieceMoved, destinationCoordinate, attackedPiece);
         }
+
+        @Override
+        public boolean isCapturingMove() {
+            return true;
+        }
+
+
     }
 
     public static final class PawnEnPassantMove extends PawnCapturingMove {

@@ -4,6 +4,8 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.PawnCapturingMove;
+import com.chess.engine.board.Move.PawnJumpMove;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +47,7 @@ public class Pawn extends Piece {
                 if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied()
                     && !board.getTile(candidateDestinationCoordinate).isTileOccupied()
                 ) {
-                    legalMoves.add(new Move.PawnJumpMove(board, this, candidateDestinationCoordinate));
+                    legalMoves.add(new PawnJumpMove(board, this, candidateDestinationCoordinate));
                 }
             } else if (candidateOffset == 7 &&
                     !(BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite()
@@ -53,7 +55,8 @@ public class Pawn extends Piece {
                     if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                         final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
                         if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                            legalMoves.add(new Move.CapturingMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                            legalMoves.add(new PawnCapturingMove(board, this, candidateDestinationCoordinate,
+                                    pieceOnCandidate));
                         }
                     }
             } else if (candidateOffset == 9 &&
@@ -62,7 +65,7 @@ public class Pawn extends Piece {
                 if (board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                     final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
                     if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                        legalMoves.add(new Move.PawnCapturingMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        legalMoves.add(new PawnCapturingMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                     }
                 }
             }
