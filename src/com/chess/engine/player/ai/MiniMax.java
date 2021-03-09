@@ -14,7 +14,36 @@ public class MiniMax implements MoveStrategy {
 
     @Override
     public Move execute(Board board, int depth) {
-        return null;
+        final long startTime = System.currentTimeMillis();
+
+        Move bestMove = null;
+        int highestSeenValue = Integer.MIN_VALUE;
+        int lowestSeenValue = Integer.MAX_VALUE;
+        int currentValue;
+        Player player = board.currentPlayer();
+
+        System.out.println(player + "thinking with depth = " + depth);
+        int numMoves = player.getLegalMoves().size();
+
+        for (final Move move : player.getLegalMoves()) {
+            final MoveTransition moveTransition = player.makeMove(move);
+            if (moveTransition.getMoveStatus().isDone()) {
+                currentValue = player.getAlliance().isWhite() // means black made a move to form the transition board
+                        ? min(moveTransition.getTransitionBoard(), depth - 1)
+                        : max(moveTransition.getTransitionBoard(), depth - 1);
+
+                if (player.getAlliance().isWhite() && currentValue > highestSeenValue) {
+                    highestSeenValue = currentValue;
+                    bestMove = move;
+                } else if (player.getAlliance().isBlack() && currentValue < lowestSeenValue ) {
+                    lowestSeenValue = currentValue;
+                    bestMove = move;
+                }
+            }
+        }
+
+        final long executionTIme = System.currentTimeMillis() - startTime;
+        return bestMove;
     }
 
     @Override
